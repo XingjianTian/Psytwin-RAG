@@ -44,8 +44,10 @@ const createSigmaSettings = (isDarkTheme: boolean): Partial<SigmaSettings> => ({
     circel: NodeCircleProgram,
     point: NodePointProgram
   },
-  labelGridCellSize: 60,
-  labelRenderedSizeThreshold: 12,
+  labelGridCellSize: 96,
+  labelRenderedSizeThreshold: 9,
+  labelDensity: 0.45,
+  labelWeight: '600',
   enableEdgeEvents: true,
   labelColor: {
     color: isDarkTheme ? labelColorDarkTheme : labelColorLightTheme,
@@ -56,7 +58,7 @@ const createSigmaSettings = (isDarkTheme: boolean): Partial<SigmaSettings> => ({
     attribute: 'labelColor'
   },
   edgeLabelSize: 8,
-  labelSize: 12
+  labelSize: 11
   // minEdgeThickness: 2
   // labelFont: 'Lato, sans-serif'
 })
@@ -198,10 +200,11 @@ const GraphViewer = () => {
 
   // Always render SigmaContainer but control its visibility with CSS
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(59,130,246,0.08),transparent_38%),linear-gradient(rgba(148,163,184,0.10)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.10)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]" />
       <SigmaContainer
         settings={memoizedSigmaSettings}
-        className="!bg-background !size-full overflow-hidden"
+        className="!bg-transparent !size-full overflow-hidden"
         ref={sigmaRef}
       >
         <GraphControl />

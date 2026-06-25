@@ -2,6 +2,7 @@ import { useRegisterEvents, useSetSettings, useSigma } from '@react-sigma/core'
 import { AbstractGraph } from 'graphology-types'
 // import { useLayoutCircular } from '@react-sigma/layout-circular'
 import { useLayoutForceAtlas2 } from '@react-sigma/layout-forceatlas2'
+import { useLayoutNoverlap } from '@react-sigma/layout-noverlap'
 import { useEffect, useState } from 'react'
 
 // import useRandomGraph, { EdgeType, NodeType } from '@/hooks/useRandomGraph'
@@ -27,8 +28,31 @@ const GraphControl = ({ disableHoverEffect }: { disableHoverEffect?: boolean }) 
   const setSettings = useSetSettings<NodeType, EdgeType>()
 
   const maxIterations = useSettingsStore.use.graphLayoutMaxIterations()
+  const effectiveLayoutIterations = Math.max(maxIterations, 80)
   const { assign: assignLayout } = useLayoutForceAtlas2({
-    iterations: maxIterations
+    iterations: effectiveLayoutIterations,
+    settings: {
+      adjustSizes: true,
+      barnesHutOptimize: true,
+      barnesHutTheta: 0.6,
+      edgeWeightInfluence: 0.35,
+      gravity: 0.35,
+      linLogMode: true,
+      outboundAttractionDistribution: true,
+      scalingRatio: 18,
+      slowDown: 4,
+      strongGravityMode: false
+    }
+  })
+  const { assign: assignNoverlap } = useLayoutNoverlap({
+    maxIterations: Math.max(80, Math.round(effectiveLayoutIterations * 0.8)),
+    settings: {
+      margin: 14,
+      expansion: 1.25,
+      gridSize: 20,
+      ratio: 1.6,
+      speed: 2
+    }
   })
 
   const { theme } = useTheme()
@@ -77,9 +101,13 @@ const GraphControl = ({ disableHoverEffect }: { disableHoverEffect?: boolean }) 
       }
 
       assignLayout();
-      console.log('Initial layout applied to graph');
+      window.setTimeout(() => {
+        assignNoverlap();
+        sigma.refresh();
+      }, 120);
+      console.log('Initial spacious layout applied to graph');
     }
-  }, [sigma, sigmaGraph, assignLayout, maxIterations])
+  }, [sigma, sigmaGraph, assignLayout, assignNoverlap, maxIterations, effectiveLayoutIterations])
 
   /**
    * Ensure the sigma instance is set in the store
@@ -221,7 +249,7 @@ const GraphControl = ({ disableHoverEffect }: { disableHoverEffect?: boolean }) 
     const isDarkTheme = theme === 'dark' ||
       (theme === 'system' && window.document.documentElement.classList.contains('dark'))
     const labelColor = isDarkTheme ? Constants.labelColorDarkTheme : undefined
-    const edgeColor = isDarkTheme ? Constants.edgeColorDarkTheme : undefined
+    const edgeColor = isDarkTheme ? Constants.edgeColorDarkTheme : Constants.edgeColorLightTheme
 
     // Update all dynamic settings directly without recreating the sigma container
     setSettings({
@@ -284,6 +312,14 @@ const GraphControl = ({ disableHoverEffect }: { disableHoverEffect?: boolean }) 
             newData.color = Constants.nodeColorDisabled
           }
         }
+
+        if (renderLabels) {
+          const degree = graph.degree(node)
+          const isImportant = newData.highlighted || node === selectedNode || degree >= 5 || data.size >= 9
+          if (!isImportant) {
+            newData.label = ''
+          }
+        }
         return newData
       },
 
@@ -297,7 +333,7 @@ const GraphControl = ({ disableHoverEffect }: { disableHoverEffect?: boolean }) 
           return { ...data, hidden: false, labelColor, color: edgeColor }
         }
 
-        const newData = { ...data, hidden: false, labelColor, color: edgeColor }
+        const newData = { ...data, hidden: false, labelColor, color: edgeColor, size: Math.max(0.45, Math.min(data.size ?? 1, 1.2)) }
 
         if (!disableHoverEffect) {
           const _focusedNode = focusedNode || selectedNode
@@ -315,6 +351,7 @@ const GraphControl = ({ disableHoverEffect }: { disableHoverEffect?: boolean }) 
               } else {
                 if (graph.extremities(edge).includes(_focusedNode)) {
                   newData.color = edgeHighlightColor
+                  newData.size = Math.max(newData.size ?? 1, 1.6)
                 }
               }
             } catch (error) {
@@ -328,8 +365,10 @@ const GraphControl = ({ disableHoverEffect }: { disableHoverEffect?: boolean }) 
             if (_selectedEdge || _focusedEdge) {
               if (edge === _selectedEdge) {
                 newData.color = Constants.edgeColorSelected
+                newData.size = Math.max(newData.size ?? 1, 1.8)
               } else if (edge === _focusedEdge) {
                 newData.color = edgeHighlightColor
+                newData.size = Math.max(newData.size ?? 1, 1.6)
               } else if (hideUnselectedEdges) {
                 newData.hidden = true
               }

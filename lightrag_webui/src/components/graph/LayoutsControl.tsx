@@ -195,7 +195,7 @@ const WorkerLayoutControl = ({ layout, autoRunFor, mainLayout }: ExtendedWorkerL
 const LayoutsControl = () => {
   const sigma = useSigma()
   const { t } = useTranslation()
-  const [layout, setLayout] = useState<LayoutName>('Circular')
+  const [layout, setLayout] = useState<LayoutName>('Force Atlas')
   const [opened, setOpened] = useState<boolean>(false)
 
   const maxIterations = useSettingsStore.use.graphLayoutMaxIterations()
@@ -204,13 +204,13 @@ const LayoutsControl = () => {
   const layoutCirclepack = useLayoutCirclepack()
   const layoutRandom = useLayoutRandom()
   const layoutNoverlap = useLayoutNoverlap({
-    maxIterations: maxIterations,
+    maxIterations: Math.max(maxIterations, 80),
     settings: {
-      margin: 5,
-      expansion: 1.1,
-      gridSize: 1,
-      ratio: 1,
-      speed: 3,
+      margin: 14,
+      expansion: 1.25,
+      gridSize: 20,
+      ratio: 1.6,
+      speed: 2,
     }
   })
   // Add parameters for Force Directed layout to improve convergence
@@ -224,7 +224,21 @@ const LayoutsControl = () => {
       maxMove: 100         // Limit maximum movement per step to prevent large jumps
     }
   })
-  const layoutForceAtlas2 = useLayoutForceAtlas2({ iterations: maxIterations })
+  const layoutForceAtlas2 = useLayoutForceAtlas2({
+    iterations: Math.max(maxIterations, 80),
+    settings: {
+      adjustSizes: true,
+      barnesHutOptimize: true,
+      barnesHutTheta: 0.6,
+      edgeWeightInfluence: 0.35,
+      gravity: 0.35,
+      linLogMode: true,
+      outboundAttractionDistribution: true,
+      scalingRatio: 18,
+      slowDown: 4,
+      strongGravityMode: false
+    }
+  })
   const workerNoverlap = useWorkerLayoutNoverlap()
   const workerForce = useWorkerLayoutForce()
   const workerForceAtlas2 = useWorkerLayoutForceAtlas2()

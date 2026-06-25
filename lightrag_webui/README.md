@@ -51,6 +51,18 @@ npm run build
   npm run dev
   ```
 
+## Knowledge Graph Layout
+
+The WebUI graph viewer uses a dense-graph layout profile for knowledge bases with many entities and relations:
+
+- deterministic spiral initial placement;
+- ForceAtlas2 community separation;
+- Noverlap collision cleanup;
+- reduced node and edge visual weight;
+- selective labels for focused, selected, and high-degree nodes.
+
+See [`../docs/WebUIGraphLayout.md`](../docs/WebUIGraphLayout.md) for the full behavior and verification notes.
+
 ## Script Commands
 
 The following are some commonly used script commands defined in `package.json`:

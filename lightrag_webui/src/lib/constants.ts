@@ -9,16 +9,17 @@ export const controlButtonVariant: ButtonVariantType = 'ghost'
 
 export const labelColorDarkTheme = '#FFFFFF'
 export const LabelColorHighlightedDarkTheme = '#000000'
-export const labelColorLightTheme = '#000'
+export const labelColorLightTheme = '#0F172A'
 
-export const nodeColorDisabled = '#E2E2E2'
-export const nodeBorderColor = '#EEEEEE'
-export const nodeBorderColorSelected = '#F57F17'
+export const nodeColorDisabled = '#CBD5E1'
+export const nodeBorderColor = '#F8FAFC'
+export const nodeBorderColorSelected = '#F59E0B'
 
-export const edgeColorDarkTheme = '#888888'
-export const edgeColorSelected = '#F57F17'
-export const edgeColorHighlightedDarkTheme = '#F57F17'
-export const edgeColorHighlightedLightTheme = '#F57F17'
+export const edgeColorDarkTheme = '#64748B'
+export const edgeColorLightTheme = '#CBD5E1'
+export const edgeColorSelected = '#F59E0B'
+export const edgeColorHighlightedDarkTheme = '#F59E0B'
+export const edgeColorHighlightedLightTheme = '#F59E0B'
 
 export const searchResultLimit = 50
 export const labelListLimit = 100
@@ -34,8 +35,8 @@ export const searchLabelsDefaultLimit = 50
 // UI Display Limits
 export const dropdownDisplayLimit = 300
 
-export const minNodeSize = 4
-export const maxNodeSize = 20
+export const minNodeSize = 3
+export const maxNodeSize = 12
 
 export const healthCheckInterval = 15 // seconds
 

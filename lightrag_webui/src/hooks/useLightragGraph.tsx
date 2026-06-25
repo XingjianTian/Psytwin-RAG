@@ -195,13 +195,19 @@ const createSigmaGraph = (rawGraph: RawGraph | null) => {
 
   // Create new graph instance
   const graph = new UndirectedGraph()
+  const nodeCount = rawGraph.nodes.length
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5))
 
   // Add nodes from raw graph data
-  for (const rawNode of rawGraph?.nodes ?? []) {
-    // Ensure we have fresh random positions for nodes
-    seedrandom(rawNode.id + Date.now().toString(), { global: true })
-    const x = Math.random()
-    const y = Math.random()
+  for (let index = 0; index < nodeCount; index++) {
+    const rawNode = rawGraph.nodes[index]
+    seedrandom(rawNode.id, { global: true })
+    const jitter = (Math.random() - 0.5) * 0.4
+    const angle = index * goldenAngle
+    const radius = 1.8 + Math.sqrt((index + 1) / Math.max(nodeCount, 1)) * 10 + jitter
+    const hubPull = 1 + Math.min(rawNode.degree, 12) / 30
+    const x = Math.cos(angle) * radius * hubPull
+    const y = Math.sin(angle) * radius * hubPull
 
     graph.addNode(rawNode.id, {
       label: rawNode.labels.join(', '),
@@ -294,15 +300,17 @@ const useLightrangeGraph = () => {
   // Track if a fetch is in progress to prevent multiple simultaneous fetches
   const fetchInProgressRef = useRef(false)
 
-  // Reset graph when query label is cleared
+  // Treat an empty label as the global graph. Older persisted settings may
+  // contain an empty label, which otherwise leaves the viewer on an empty graph.
   useEffect(() => {
-    if (!queryLabel && (rawGraph !== null || sigmaGraph !== null)) {
+    if (!queryLabel) {
       const state = useGraphStore.getState()
-      state.reset()
       state.setGraphDataFetchAttempted(false)
       state.setLabelsFetchAttempted(false)
+      useSettingsStore.getState().setQueryLabel(Constants.defaultQueryLabel)
       dataLoadedRef.current = false
       initialLoadRef.current = false
+      emptyDataHandledRef.current = false
     }
   }, [queryLabel, rawGraph, sigmaGraph])
 
@@ -313,8 +321,10 @@ const useLightrangeGraph = () => {
       return
     }
 
+    const effectiveQueryLabel = queryLabel || Constants.defaultQueryLabel
+
     // Empty queryLabel should be only handle once(avoid infinite loop)
-    if (!queryLabel && emptyDataHandledRef.current) {
+    if (!effectiveQueryLabel && emptyDataHandledRef.current) {
       return;
     }
 
@@ -339,21 +349,14 @@ const useLightrangeGraph = () => {
       console.log('Preparing graph data...')
 
       // Use a local copy of the parameters
-      const currentQueryLabel = queryLabel
+      const currentQueryLabel = effectiveQueryLabel
       const currentMaxQueryDepth = maxQueryDepth
       const currentMaxNodes = maxNodes
 
       // Declare a variable to store data promise
       let dataPromise: Promise<{ rawGraph: RawGraph | null; is_truncated: boolean | undefined } | null>;
 
-      // 1. If query label is not empty, use fetchGraph
-      if (currentQueryLabel) {
-        dataPromise = fetchGraph(currentQueryLabel, currentMaxQueryDepth, currentMaxNodes);
-      } else {
-        // 2. If query label is empty, set data to null
-        console.log('Query label is empty, show empty graph')
-        dataPromise = Promise.resolve({ rawGraph: null, is_truncated: false });
-      }
+      dataPromise = fetchGraph(currentQueryLabel, currentMaxQueryDepth, currentMaxNodes);
 
       // 3. Process data
       dataPromise.then((result) => {
