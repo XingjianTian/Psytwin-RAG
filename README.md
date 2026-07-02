@@ -111,6 +111,24 @@
 
 </details>
 
+## PsyTwin RAG Deployment
+
+This fork is used by PsyTwin-Sentinel as the psychological knowledge-base service. Use this repository instead of the upstream `HKUDS/LightRAG` repository when you need the same WebUI graph layout, API behavior, and seed knowledge import workflow as the PsyTwin deployment.
+
+For a reproducible PsyTwin knowledge base:
+
+1. Copy `env.example` to `.env` and configure Aliyun Bailian compatible OpenAI models.
+2. Start the service with Docker Compose.
+3. Import the seed documents:
+
+```powershell
+$env:LIGHTRAG_URL="http://localhost:9621"
+$env:LIGHTRAG_API_KEY="psytwin-local-rag-key"
+node .\psytwin_seed\import-seed.mjs
+```
+
+See [psytwin_seed/README.md](./psytwin_seed/README.md) for the seed import workflow and [docs/WebUIGraphLayout.md](./docs/WebUIGraphLayout.md) for the graph layout customization.
+
 ## Installation
 
 **💡 Using uv for Package Management**: This project uses [uv](https://docs.astral.sh/uv/) for fast and reliable Python package management. Install uv first: `curl -LsSf https://astral.sh/uv/install.sh | sh` (Unix/macOS) or `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"` (Windows)
