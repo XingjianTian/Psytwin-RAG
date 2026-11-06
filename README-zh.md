@@ -1,3 +1,19 @@
+# PsyTwin RAG
+
+[English (primary)](README.md) · **简体中文（次要版本）** · [日本語](README-ja.md)
+
+基于 LightRAG 的知识库服务，供 PsyTwin-Sentinel 使用，提供文档入库、知识图谱检索和 Web 管理界面。以下保留 LightRAG 中文文档与上游归属；本仓库的 PsyTwin 部署说明见下一节及[英文主版](README.md#psytwin-rag-deployment)。
+
+## PsyTwin 部署
+
+需要与 PsyTwin 部署一致的图谱布局、API 行为和种子知识导入流程时，使用本仓库。
+
+1. 将 `env.example` 复制为 `.env`，配置阿里云百炼兼容 OpenAI 的模型服务。
+2. 通过 Docker Compose 启动服务。
+3. 按 [psytwin_seed/README.md](./psytwin_seed/README.md) 导入种子文档；图谱布局定制见 [docs/WebUIGraphLayout.md](./docs/WebUIGraphLayout.md)。
+
+---
+
 <div align="center">
 
 <div style="margin: 20px 0;">
@@ -31,8 +47,8 @@
       <a href="https://github.com/HKUDS/LightRAG/issues/285"><img src="https://img.shields.io/badge/💬微信群-交流-07c160?style=for-the-badge&logo=wechat&logoColor=white&labelColor=1a1a2e"></a>
     </p>
     <p>
-      <a href="README-zh.md"><img src="https://img.shields.io/badge/🇨🇳中文版-1a1a2e?style=for-the-badge"></a>
       <a href="README.md"><img src="https://img.shields.io/badge/🇺🇸English-1a1a2e?style=for-the-badge"></a>
+      <a href="README-zh.md"><img src="https://img.shields.io/badge/🇨🇳中文版-1a1a2e?style=for-the-badge"></a>
       <a href="README-ja.md"><img src="https://img.shields.io/badge/🇯🇵日本語版-1a1a2e?style=for-the-badge"></a>
     </p>
     <p>

@@ -1,3 +1,13 @@
+# PsyTwin RAG
+
+**English (primary)** · [简体中文](README-zh.md) · [日本語](README-ja.md)
+
+A LightRAG-based knowledge-base service used by PsyTwin-Sentinel, with document ingestion, knowledge-graph retrieval, and a web management interface. See [PsyTwin deployment](#psytwin-rag-deployment) for the repository-specific setup and seed import workflow.
+
+The LightRAG documentation and upstream attribution are retained below.
+
+---
+
 <div align="center">
 
 <div style="margin: 20px 0;">
@@ -31,8 +41,8 @@
       <a href="https://github.com/HKUDS/LightRAG/issues/285"><img src="https://img.shields.io/badge/💬WeChat-Group-07c160?style=for-the-badge&logo=wechat&logoColor=white&labelColor=1a1a2e"></a>
     </p>
     <p>
-      <a href="README-zh.md"><img src="https://img.shields.io/badge/🇨🇳中文版-1a1a2e?style=for-the-badge"></a>
       <a href="README.md"><img src="https://img.shields.io/badge/🇺🇸English-1a1a2e?style=for-the-badge"></a>
+      <a href="README-zh.md"><img src="https://img.shields.io/badge/🇨🇳中文版-1a1a2e?style=for-the-badge"></a>
       <a href="README-ja.md"><img src="https://img.shields.io/badge/🇯🇵日本語版-1a1a2e?style=for-the-badge"></a>
     </p>
     <p>
